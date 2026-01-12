@@ -776,6 +776,8 @@ const ProjectDetail = () => {
                     {[
                       {id: 'bl-1', date: '15 Ene 2026', tier: 'TIER 1', type: 'DOFOLLOW', source: 'observatorio.tec.mx', context: "Mención en artículo: 'Tendencias en admisiones internacionales 2026'.", anchor: "examen estandarizado SAT", tierColor: "bg-violet-500/10 text-violet-400 border-violet-500/20", followColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"},
                       {id: 'bl-2', date: '10 Dic 2025', tier: 'TIER 2', type: 'DOFOLLOW', source: 'mextudia.com', context: "Inclusión en listado: 'Las mejores guías para estudiar en el extranjero'.", anchor: "guía de estudio para el SAT", tierColor: "bg-blue-500/10 text-blue-400 border-blue-500/20", followColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"},
+                      {id: 'bl-3', date: '05 Nov 2025', tier: 'TIER 1', type: 'DOFOLLOW', source: 'gaceta.unam.mx', context: "Referencia en nota educativa: 'Requisitos para posgrados en el extranjero'.", anchor: "prueba de admisión SAT", tierColor: "bg-violet-500/10 text-violet-400 border-violet-500/20", followColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"},
+                      {id: 'bl-4', date: '22 Oct 2025', tier: 'TIER 3', type: 'NOFOLLOW', source: 'medium.com/study-abroad', context: "Comentario en post viral sobre aplicaciones a USA.", anchor: "recurso recomendado", tierColor: "bg-slate-800 text-slate-400 border-slate-700", followColor: "bg-amber-500/10 text-amber-400 border-amber-500/20"},
                     ].map((link) => (
                       <div key={link.id} className="relative ml-8 group">
                         <div className="absolute -left-[41px] top-6 h-5 w-5 rounded-full border-4 border-slate-950 flex items-center justify-center bg-slate-800 group-hover:bg-violet-500 transition-colors shadow-lg"></div>
@@ -809,6 +811,9 @@ const ProjectDetail = () => {
                     {[
                        {id: 'il-1', source: '/blog/mejores-universidades-ivy-league', title: 'Top 8 Universidades Ivy League y sus requisitos', placement: 'Content Body', placementIcon: LayoutTemplate, relevance: 'High', anchor: 'puntaje SAT perfecto'},
                        {id: 'il-2', source: '/blog/diferencias-sat-vs-act', title: 'SAT vs ACT: ¿Cuál examen debo tomar?', placement: 'Content Body', placementIcon: LayoutTemplate, relevance: 'High', anchor: 'examen SAT'},
+                       {id: 'il-3', source: '/recursos/calendario-sat-2025', title: 'Calendario Oficial SAT 2025-2026', placement: 'Sidebar', placementIcon: PanelLeft, relevance: 'Medium', anchor: 'fechas SAT 2025'},
+                       {id: 'il-4', source: '/blog/becas-para-mexicanos', title: 'Guía de Becas para Estudiantes Mexicanos en USA', placement: 'Content Body', placementIcon: LayoutTemplate, relevance: 'High', anchor: 'requisito académico'},
+                       {id: 'il-5', source: '/servicios/tutoria-personalizada', title: 'Programa de Tutoría 1 a 1', placement: 'Footer', placementIcon: Layout, relevance: 'Medium', anchor: 'preparación experta'},
                     ].map((link) => (
                        <div key={link.id} className="relative ml-8 group">
                           <div className="absolute -left-[41px] top-6 h-5 w-5 rounded-full border-4 border-slate-950 flex items-center justify-center bg-slate-800 group-hover:bg-violet-600 transition-colors shadow-lg"><div className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-white"></div></div>
