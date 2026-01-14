@@ -17,12 +17,11 @@
               sans: ['Inter', 'sans-serif'],
             },
             colors: {
-              // Customizing slate scale to match the requested #1A1A2E background
               slate: {
-                800: '#34344E', // Lighter borders for contrast against dark bg
-                850: '#2A2A42', // Custom shade
-                900: '#212136', // Card Background (Slightly lighter than bg to pop)
-                950: '#1A1A2E', // Main Background MATCHING USER REQUEST
+                800: '#34344E',
+                850: '#2A2A42',
+                900: '#212136',
+                950: '#1A1A2E',
               }
             }
           }
@@ -31,9 +30,7 @@
     </script>
     <style>
       body {
-        /* Requested Background Color */
         background-color: #1A1A2E; 
-        /* Subtle top gradient to add premium feel without changing the base tone too much */
         background-image: radial-gradient(circle at 50% -20%, #4c3a7a 0%, #1A1A2E 50%);
         background-attachment: fixed;
         color: #f8fafc;
@@ -41,39 +38,32 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
-      /* Custom Scrollbar adjusted for the new theme */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #1A1A2E; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #34344E; 
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #474766; 
-      }
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: #1A1A2E; }
+      ::-webkit-scrollbar-thumb { background: #34344E; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #474766; }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "recharts": "https://esm.sh/recharts@^3.6.0",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "clsx": "https://esm.sh/clsx@^2.1.1",
-    "tailwind-merge": "https://esm.sh/tailwind-merge@^3.4.0",
-    "react-country-flag": "https://esm.sh/react-country-flag@3.1.0"
-  }
-}
-</script>
-</head>
+    <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+        "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+        "recharts": "https://esm.sh/recharts@^3.6.0",
+        "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
+        "react/": "https://esm.sh/react@^19.2.3/",
+        "react": "https://esm.sh/react@^19.2.3",
+        "clsx": "https://esm.sh/clsx@^2.1.1",
+        "tailwind-merge": "https://esm.sh/tailwind-merge@^3.4.0",
+        "react-country-flag": "https://esm.sh/react-country-flag@3.1.0"
+      }
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
+    
+    <!-- ESTA ES LA LÍNEA QUE FALTABA PARA QUE VITE CARGUE TU APP -->
+    <script type="module" src="/index.tsx"></script>
+    
   </body>
 </html>
