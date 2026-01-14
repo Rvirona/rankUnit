@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RankUnit - Asset SEO Manager</title>
+    
+    <!-- Tailwind CSS (Estilos) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Configuración de Tailwind -->
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -28,6 +34,8 @@
         }
       }
     </script>
+    
+    <!-- Estilos Globales -->
     <style>
       body {
         background-color: #1A1A2E; 
@@ -43,26 +51,12 @@
       ::-webkit-scrollbar-thumb { background: #34344E; border-radius: 4px; }
       ::-webkit-scrollbar-thumb:hover { background: #474766; }
     </style>
-    <script type="importmap">
-    {
-      "imports": {
-        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-        "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-        "recharts": "https://esm.sh/recharts@^3.6.0",
-        "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
-        "react/": "https://esm.sh/react@^19.2.3/",
-        "react": "https://esm.sh/react@^19.2.3",
-        "clsx": "https://esm.sh/clsx@^2.1.1",
-        "tailwind-merge": "https://esm.sh/tailwind-merge@^3.4.0",
-        "react-country-flag": "https://esm.sh/react-country-flag@3.1.0"
-      }
-    }
-    </script>
   </head>
   <body>
+    <!-- Aquí React monta la aplicación -->
     <div id="root"></div>
     
-    <!-- ESTA ES LA LÍNEA QUE FALTABA PARA QUE VITE CARGUE TU APP -->
+    <!-- EL CONECTOR IMPORTANTE: Llama a tu archivo principal de React -->
     <script type="module" src="/index.tsx"></script>
     
   </body>
