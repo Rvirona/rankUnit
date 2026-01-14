@@ -7,20 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+              sans: ['Inter', 'sans-serif'],
             },
             colors: {
+              // Customizing slate scale to match the requested #1A1A2E background
               slate: {
-                850: '#151e2e', // Custom shade for depth
-                900: '#0f172a',
-                950: '#020617',
+                800: '#34344E', // Lighter borders for contrast against dark bg
+                850: '#2A2A42', // Custom shade
+                900: '#212136', // Card Background (Slightly lighter than bg to pop)
+                950: '#1A1A2E', // Main Background MATCHING USER REQUEST
               }
             }
           }
@@ -29,23 +31,30 @@
     </script>
     <style>
       body {
-        background-color: #020617; /* Slate 950 */
+        /* Requested Background Color */
+        background-color: #1A1A2E; 
+        /* Subtle top gradient to add premium feel without changing the base tone too much */
+        background-image: radial-gradient(circle at 50% -20%, #4c3a7a 0%, #1A1A2E 50%);
+        background-attachment: fixed;
         color: #f8fafc;
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
-      /* Custom Scrollbar for dark theme */
+      /* Custom Scrollbar adjusted for the new theme */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #0f172a; 
+        background: #1A1A2E; 
       }
       ::-webkit-scrollbar-thumb {
-        background: #334155; 
+        background: #34344E; 
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #475569; 
+        background: #474766; 
       }
     </style>
   <script type="importmap">

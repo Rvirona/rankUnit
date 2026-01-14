@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Added useNavigate
 import { 
   Calendar, 
   CheckCircle2, 
@@ -49,11 +50,15 @@ import {
   LayoutTemplate,
   PanelLeft,
   Footprints,
-  Swords, // New icon for Cannibalization
-  Scale,  // New icon for Gap Analysis
-  Bot,    // New icon for AI Copilot
+  Swords, 
+  Scale, 
+  Bot, 
   Zap,
-  Copy
+  Copy,
+  ArrowLeft,
+  Maximize2,
+  Split,
+  Trash2
 } from 'lucide-react';
 import { 
   PieChart, 
@@ -79,8 +84,8 @@ import {
   MOCK_ACTIVITY_LOG,
   SUMMARY_EFFORT_DATA,
   SUMMARY_KEYWORD_STATUS_DATA,
-  MOCK_CANNIBALIZATION, // Import new data
-  MOCK_GAP_ANALYSIS    // Import new data
+  MOCK_CANNIBALIZATION, 
+  MOCK_GAP_ANALYSIS    
 } from '../constants';
 import { Quarter, ObjectiveStatus, KeywordData, LogType } from '../types';
 import { useViewMode } from '../lib/context';
@@ -96,6 +101,7 @@ const RANK_HISTORY_DATA = [
 ];
 
 const ProjectDetail = () => {
+  const navigate = useNavigate(); // Hook usage
   // Updated tabs state - Default back to PERFORMANCE to show Cannibalization first
   const [activeTab, setActiveTab] = useState<'performance' | 'audit' | 'links' | 'action_plan'>('performance');
   const [linksSubTab, setLinksSubTab] = useState<'external' | 'internal'>('internal'); 
@@ -106,6 +112,9 @@ const ProjectDetail = () => {
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiSuggestionVisible, setAiSuggestionVisible] = useState(false);
 
+  // State for Cannibalization Recommendations
+  const [expandedCannibalization, setExpandedCannibalization] = useState<number | null>(null);
+
   const { isClientMode } = useViewMode();
 
   // TIME TRACKER LOGIC (Simulation for 3-Month Cycle)
@@ -115,7 +124,7 @@ const ProjectDetail = () => {
   const daysLeft = totalDays - daysPassed;
   const progressPercentage = (daysPassed / totalDays) * 100;
 
-  // ACTION PLAN STATE
+  // ACTION PLAN STATE (UPDATED WITH SPECIFIC USER REQUIREMENTS)
   const [actionPlan, setActionPlan] = useState([
     {
       id: 'technical',
@@ -123,46 +132,59 @@ const ProjectDetail = () => {
       icon: Wrench,
       color: 'text-blue-400',
       tasks: [
-        { label: 'Canonical Correcto: La URL es canónica hacia sí misma.', done: true },
-        { label: 'Redirecciones: No hay cadenas de redirección 301 internas.', done: true },
-        { label: "Datos Estructurados: Implementar 'FAQ Schema' para las preguntas frecuentes del SAT.", done: false },
-        { label: 'Core Web Vitals: LCP es de 3.2s (Debe bajar a <2.5s). Optimizar carga de fuentes.', done: false },
+        { label: 'Optimizar Page Speed', done: false },
+        { label: 'Implementar schema markup', done: false },
+        { label: 'Optimizar imágenes', done: true },
+        { label: 'Resolver problemas de mobile', done: true },
+        { label: 'Revisar etiquetas de ahreflang (Si aplica)', done: false },
+        { label: 'Canonical correcto', done: true },
+        { label: 'Redirecciones', done: true },
+        { label: 'Datos estructurados', done: false },
+        { label: 'Core Web Vitals', done: false },
       ]
     },
     {
       id: 'onpage',
-      title: 'SEO On-Page',
+      title: 'Auditoría SEO On-Page',
       icon: FileText,
       color: 'text-violet-400',
       tasks: [
-        { label: 'URL Friendly: Corta, minúsculas, con guiones (/guia-completa-sat).', done: true },
-        { label: 'Keyword en H1: "Guía Completa" + "SAT" presentes.', done: true },
-        { label: 'Title Tag: Actualizar año "2024" a "2025-2026".', done: false },
-        { label: 'Jerarquía H: Eliminar H3 vacío en la sección final.', done: false },
-        { label: 'Meta Descripción: Incluye CTA ("Prepárate hoy").', done: true },
+        { label: 'Optimizar title tag', done: true },
+        { label: 'Optimizar meta description', done: true },
+        { label: 'Optimizar H1, H2, H3', done: true },
+        { label: 'Mejorar densidad de keyword', done: false },
+        { label: 'Agregar keywords secundarias', done: false },
+        { label: 'Optimizar alt text de imágenes', done: false },
+        { label: 'Mejorar internal linking', done: false },
       ]
     },
     {
-      id: 'content',
-      title: 'Contenido & Profundidad',
+      id: 'ux_cro',
+      title: 'Auditoría de UX/CRO',
+      icon: MousePointerClick,
+      color: 'text-emerald-400',
+      tasks: [
+        { label: 'CTA flotante visible en mobile', done: false },
+        { label: 'CTA principal claro y repetido estratégicamente', done: false },
+        { label: 'Legibilidad optimizada (párrafos cortos y escaneables)', done: true },
+        { label: 'Tabla de contenidos con anclas (Sticky TOC)', done: false },
+        { label: 'Microcopy persuasivo en CTAs', done: false },
+        { label: 'Prueba social cercana al CTA', done: false },
+        { label: 'Video o elemento multimedia explicativo', done: false },
+        { label: 'CTAs contextuales dentro del contenido', done: false },
+        { label: 'Formularios cortos y de baja fricción', done: true },
+        { label: 'FAQ colapsables orientadas a conversión', done: true },
+      ]
+    },
+    {
+      id: 'content_plan',
+      title: 'Plan de Contenido por URL',
       icon: BookOpen,
       color: 'text-amber-400',
       tasks: [
-        { label: 'Freshness: Actualizar tabla de "Fechas de Examen" (Datos expirados).', done: false },
-        { label: 'Brecha de Contenido: Agregar sección sobre "Digital SAT" (Nuevo formato).', done: false },
-        { label: 'Interlinking: Enlazar hacia el artículo "Becas Deportivas" desde el párrafo de introducción.', done: false },
-      ]
-    },
-    {
-      id: 'ux',
-      title: 'UX & CRO (Conversión)',
-      icon: Rocket,
-      color: 'text-emerald-400',
-      tasks: [
-        { label: 'Legibilidad: Párrafos cortos (<3 líneas).', done: true },
-        { label: 'Tabla de Contenidos: Agregar índice con enlaces ancla al inicio (Sticky TOC).', done: false },
-        { label: 'Multimedia: Insertar video explicativo sobre el registro en College Board.', done: false },
-        { label: 'CTA Flotante: Agregar botón "Agenda tu Asesoría" en el sidebar móvil.', done: false },
+        { label: 'Freshness (Actualización de contenido)', done: false },
+        { label: 'Brecha de contenido (Content Gap)', done: false },
+        { label: 'Interlinking Estratégico', done: false },
       ]
     }
   ]);
@@ -192,6 +214,10 @@ const ProjectDetail = () => {
   const toggleAccordion = (id: string) => {
     setOpenAccordionId(openAccordionId === id ? null : id);
   };
+  
+  const toggleCannibalization = (index: number) => {
+    setExpandedCannibalization(expandedCannibalization === index ? null : index);
+  };
 
   const handleAiGenerate = () => {
     setAiGenerating(true);
@@ -201,9 +227,44 @@ const ProjectDetail = () => {
     }, 1500);
   };
 
+  // Helper for Cannibalization Content
+  const getCannibalizationStrategy = (index: number) => {
+    if (index === 0) {
+        return {
+            title: "Consolidación de Autoridad (301)",
+            description: "Ambas URLs compiten por intención transaccional. La URL #11 carece de enlaces externos únicos.",
+            steps: [
+                { icon: GitMerge, text: "Implementar Redirect 301 desde /clases-sat-virtuales hacia /curso-sat-online-mexico" },
+                { icon: FileText, text: "Migrar párrafos de valor (FAQ y Testimonios) de la URL antigua a la URL destino." },
+                { icon: LinkIcon, text: "Actualizar enlaces internos del menú principal para apuntar a la URL ganadora." }
+            ]
+        };
+    }
+    return {
+        title: "Diferenciación de Intención (De-optimization)",
+        description: "El blog post está rankeando para una keyword transaccional. Debemos enfocarlo a 'Top of Funnel'.",
+        steps: [
+            { icon: Type, text: "Modificar Title Tag del blog para enfocar en 'Guía' o 'Tips' en lugar de 'Prueba'." },
+            { icon: Square, text: "Eliminar la keyword exacta 'examenes de prueba' del H1 y primeros 100 caracteres." },
+            { icon: ArrowUp, text: "Agregar enlace interno exact-match desde el Blog hacia la Landing Page de Recursos." }
+        ]
+    };
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
+      {/* Back Navigation Button */}
+      <div className="flex items-center gap-2">
+         <button 
+           onClick={() => navigate(-1)}
+           className="flex items-center gap-2 px-3 py-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all group"
+         >
+           <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+           <span className="text-sm font-medium">Volver al Inventario</span>
+         </button>
+      </div>
+
       {/* 1. ASSET HEADER */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -342,142 +403,241 @@ const ProjectDetail = () => {
         {activeTab === 'performance' && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
             
-            {/* ROW 1: Metrics & Ranking History (Existing) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-all">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
-                    <Trophy className="h-5 w-5 text-violet-400" />
-                  </div>
-                  <span className="flex items-center gap-1 text-xs font-medium text-rose-400 bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20">
-                    <ArrowDownRight className="h-3 w-3" /> 2 posiciones
-                  </span>
-                </div>
-                <div>
-                  <span className="text-slate-400 text-sm font-medium">Posición Actual</span>
-                  <h3 className="text-3xl font-bold text-white mt-1">#5</h3>
-                  <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
-                    <Target className="h-3 w-3" /> Objetivo: Top 3
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-all">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
-                    <Users className="h-5 w-5 text-blue-400" />
-                  </div>
-                  <span className="flex items-center gap-1 text-xs font-medium text-slate-400 bg-slate-800 px-2 py-1 rounded border border-slate-700">
-                    Estable
-                  </span>
-                </div>
-                <div>
-                  <span className="text-slate-400 text-sm font-medium">Tráfico Mensual (Organic)</span>
-                  <h3 className="text-3xl font-bold text-white mt-1">450</h3>
-                  <p className="text-xs text-slate-500 mt-2">
-                    Aporta el <span className="text-slate-300 font-bold">8%</span> del tráfico del blog
-                  </p>
+            {/* ROW 1: Metrics & Ranking History (ENHANCED CARDS) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Card 1: Posición */}
+              <div className="relative group bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:border-violet-500/50 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] hover:-translate-y-1">
+                {/* Inner Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+                
+                <div className="relative z-10">
+                   <div className="flex justify-between items-start mb-4">
+                     <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:bg-violet-500/10 group-hover:border-violet-500/30 transition-colors">
+                       <Trophy className="h-6 w-6 text-violet-500 group-hover:text-violet-400" />
+                     </div>
+                     <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-400 bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20">
+                       <ArrowDownRight className="h-3 w-3" /> 2 POS
+                     </span>
+                   </div>
+                   <div>
+                     <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">Posición Actual</span>
+                     <h3 className="text-4xl font-black text-white mt-2 group-hover:text-violet-100 transition-colors">#5</h3>
+                     <p className="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
+                       <Target className="h-3 w-3 text-violet-400" /> Objetivo Trimestral: <span className="text-slate-300 font-bold">Top 3</span>
+                     </p>
+                   </div>
                 </div>
               </div>
 
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-all">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
-                    <MousePointerClick className="h-5 w-5 text-amber-400" />
-                  </div>
-                  <span className="flex items-center gap-1 text-xs font-medium text-amber-400 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
-                    <AlertTriangle className="h-3 w-3" /> Bajo para #5
-                  </span>
+              {/* Card 2: Tráfico */}
+              <div className="relative group bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+                
+                <div className="relative z-10">
+                   <div className="flex justify-between items-start mb-4">
+                     <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:bg-blue-500/10 group-hover:border-blue-500/30 transition-colors">
+                       <Users className="h-6 w-6 text-blue-500 group-hover:text-blue-400" />
+                     </div>
+                     <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-800 px-2 py-1 rounded border border-slate-700">
+                       Estable
+                     </span>
+                   </div>
+                   <div>
+                     <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">Tráfico Mensual (SEO)</span>
+                     <h3 className="text-4xl font-black text-white mt-2 group-hover:text-blue-100 transition-colors">450</h3>
+                     <p className="text-xs text-slate-500 mt-2">
+                       Aporta el <span className="text-blue-400 font-bold">8%</span> del tráfico total del blog
+                     </p>
+                   </div>
                 </div>
-                <div>
-                  <span className="text-slate-400 text-sm font-medium">Click Through Rate</span>
-                  <h3 className="text-3xl font-bold text-white mt-1">2.1%</h3>
-                  <button className="text-xs text-violet-400 mt-2 hover:text-violet-300 font-medium underline decoration-dashed underline-offset-2">
-                    Mejorar Meta Title &rarr;
-                  </button>
+              </div>
+
+              {/* Card 3: CTR */}
+              <div className="relative group bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+                
+                <div className="relative z-10">
+                   <div className="flex justify-between items-start mb-4">
+                     <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:bg-amber-500/10 group-hover:border-amber-500/30 transition-colors">
+                       <MousePointerClick className="h-6 w-6 text-amber-500 group-hover:text-amber-400" />
+                     </div>
+                     <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
+                       <AlertTriangle className="h-3 w-3" /> Bajo
+                     </span>
+                   </div>
+                   <div>
+                     <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">Click Through Rate</span>
+                     <h3 className="text-4xl font-black text-white mt-2 group-hover:text-amber-100 transition-colors">2.1%</h3>
+                     <button className="text-xs text-amber-400 mt-2 hover:text-amber-300 font-bold uppercase tracking-wide flex items-center gap-1 group/btn">
+                       Mejorar Meta Title <ArrowRightLeft className="h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
+                     </button>
+                   </div>
                 </div>
               </div>
             </div>
 
-            {/* NEW SECTION 1: CANNIBALIZATION MONITOR */}
+            {/* NEW SECTION 1: CANNIBALIZATION MONITOR (INTERACTIVE) */}
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 relative overflow-hidden">
                <div className="absolute top-0 right-0 p-4 opacity-10">
                   <Swords className="h-24 w-24 text-rose-500" />
                </div>
                
-               <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+               <h3 className="text-base font-bold text-white mb-6 flex items-center gap-2">
                   <Swords className="h-5 w-5 text-rose-400" />
                   Monitor de Canibalización
                   <span className="text-xs font-normal text-slate-500 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded ml-2">2 Conflictos detectados</span>
                </h3>
 
                <div className="space-y-4">
-                  {MOCK_CANNIBALIZATION.map((item, idx) => (
-                    <div key={idx} className="bg-slate-950/50 border border-slate-800 rounded-lg p-4 flex flex-col md:flex-row gap-6 items-center">
-                       {/* Keyword & Impact */}
-                       <div className="min-w-[180px]">
-                          <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block mb-1">Keyword Conflicto</span>
-                          <div className="flex items-center gap-2">
-                             <span className="text-slate-200 font-medium font-mono text-sm bg-slate-900 px-2 py-1 rounded border border-slate-800">
-                                "{item.keyword}"
-                             </span>
-                          </div>
-                          <div className="mt-2">
-                             {item.impact === 'high' && (
-                                <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded uppercase tracking-wide">Alto Impacto</span>
-                             )}
-                             {item.impact === 'medium' && (
-                                <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded uppercase tracking-wide">Impacto Medio</span>
-                             )}
-                          </div>
+                  {MOCK_CANNIBALIZATION.map((item, idx) => {
+                    const isExpanded = expandedCannibalization === idx;
+                    const strategy = getCannibalizationStrategy(idx);
+                    
+                    return (
+                    <div key={idx} className={cn(
+                        "bg-slate-950/50 border rounded-xl overflow-hidden transition-all duration-300",
+                        isExpanded ? "border-rose-500/30 bg-slate-950 shadow-[0_0_20px_rgba(244,63,94,0.1)]" : "border-slate-800 hover:border-slate-700"
+                    )}>
+                       <div className="p-5 flex flex-col md:flex-row gap-6 items-center">
+                           {/* Keyword & Impact */}
+                           <div className="min-w-[180px]">
+                              <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block mb-1">Keyword Conflicto</span>
+                              <div className="flex items-center gap-2">
+                                 <span className="text-slate-200 font-medium font-mono text-sm bg-slate-900 px-2 py-1 rounded border border-slate-800">
+                                    "{item.keyword}"
+                                 </span>
+                              </div>
+                              <div className="mt-2">
+                                 {item.impact === 'high' && (
+                                    <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded uppercase tracking-wide">Alto Impacto</span>
+                                 )}
+                                 {item.impact === 'medium' && (
+                                    <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded uppercase tracking-wide">Impacto Medio</span>
+                                 )}
+                              </div>
+                           </div>
+
+                           {/* Visual Battle */}
+                           <div className="flex-1 w-full flex items-center justify-center gap-4">
+                              {/* Primary URL */}
+                              <div className="text-center group/url">
+                                 <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Target URL</div>
+                                 <div className="bg-emerald-500/5 border border-emerald-500/20 p-3 rounded-lg min-w-[140px] group-hover/url:bg-emerald-500/10 transition-colors">
+                                    <div className="text-xs text-emerald-400 font-mono truncate max-w-[120px] mx-auto">{item.primaryUrl}</div>
+                                    <div className="text-xl font-bold text-white mt-1">#{item.primaryRank}</div>
+                                 </div>
+                              </div>
+
+                              {/* VS Icon */}
+                              <div className="text-slate-700 font-black italic text-lg relative">
+                                  VS
+                                  <div className="absolute inset-0 blur-sm text-rose-500/20">VS</div>
+                              </div>
+
+                              {/* Conflicting URL */}
+                              <div className="text-center group/url">
+                                 <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Cannibal URL</div>
+                                 <div className="bg-rose-500/5 border border-rose-500/20 p-3 rounded-lg min-w-[140px] group-hover/url:bg-rose-500/10 transition-colors">
+                                    <div className="text-xs text-rose-400 font-mono truncate max-w-[120px] mx-auto">{item.conflictingUrl}</div>
+                                    <div className="text-xl font-bold text-white mt-1">#{item.conflictingRank}</div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           {/* Action */}
+                           <div className="w-full md:w-auto text-center">
+                              <button 
+                                onClick={() => toggleCannibalization(idx)}
+                                className={cn(
+                                    "text-xs px-4 py-2.5 rounded-lg border transition-all font-medium flex items-center justify-center gap-2 min-w-[160px]",
+                                    isExpanded 
+                                        ? "bg-slate-800 text-white border-slate-600" 
+                                        : "bg-slate-900 text-slate-300 border-slate-700 hover:text-white hover:border-violet-500 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                                )}>
+                                 {isExpanded ? 'Ocultar Estrategia' : 'Ver Recomendación'} 
+                                 <ChevronDown className={cn("h-3 w-3 transition-transform", isExpanded && "rotate-180")} />
+                              </button>
+                           </div>
                        </div>
 
-                       {/* Visual Battle */}
-                       <div className="flex-1 w-full flex items-center justify-center gap-4">
-                          {/* Primary URL */}
-                          <div className="text-center">
-                             <div className="text-xs text-slate-500 mb-1">URL Principal (Target)</div>
-                             <div className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg min-w-[140px]">
-                                <div className="text-xs text-emerald-300 font-mono truncate max-w-[120px] mx-auto">{item.primaryUrl}</div>
-                                <div className="text-xl font-bold text-white mt-1">#{item.primaryRank}</div>
-                             </div>
-                          </div>
+                       {/* EXPANDABLE RECOMMENDATION PANEL */}
+                       {isExpanded && (
+                           <div className="border-t border-slate-800 bg-slate-900/30 animate-in slide-in-from-top-2 duration-300">
+                               <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                   {/* Left: Diagnosis */}
+                                   <div className="col-span-1 space-y-3">
+                                       <div className="flex items-center gap-2 text-rose-400 font-bold text-sm uppercase tracking-wide">
+                                           <Activity className="h-4 w-4" /> Diagnóstico
+                                       </div>
+                                       <p className="text-sm text-slate-400 leading-relaxed">
+                                           {strategy.description}
+                                       </p>
+                                       <div className="mt-4 p-3 bg-slate-950 rounded border border-slate-800">
+                                           <div className="text-[10px] text-slate-500 uppercase mb-1">Acción Recomendada</div>
+                                           <div className="text-sm font-bold text-white flex items-center gap-2">
+                                               <Split className="h-4 w-4 text-violet-400" />
+                                               {strategy.title}
+                                           </div>
+                                       </div>
+                                   </div>
 
-                          {/* VS Icon */}
-                          <div className="text-slate-600 font-black italic text-lg">VS</div>
+                                   {/* Right: Technical Protocol */}
+                                   <div className="col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-5 relative overflow-hidden">
+                                       {/* Decor */}
+                                       <div className="absolute top-0 right-0 p-3 opacity-20">
+                                           <Code2 className="h-12 w-12 text-slate-600" />
+                                       </div>
+                                       
+                                       <h4 className="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
+                                           <Code2 className="h-4 w-4 text-emerald-400" />
+                                           Protocolo de Resolución Técnica
+                                       </h4>
+                                       
+                                       <div className="space-y-3">
+                                           {strategy.steps.map((step, sIdx) => (
+                                               <div key={sIdx} className="flex items-start gap-3 text-sm group/step">
+                                                   <div className="mt-0.5 p-1 rounded bg-slate-900 border border-slate-800 text-slate-400 group-hover/step:text-violet-400 group-hover/step:border-violet-500/50 transition-colors">
+                                                       <step.icon className="h-3.5 w-3.5" />
+                                                   </div>
+                                                   <span className="text-slate-400 group-hover/step:text-slate-200 transition-colors">
+                                                       {step.text}
+                                                   </span>
+                                               </div>
+                                           ))}
+                                       </div>
 
-                          {/* Conflicting URL */}
-                          <div className="text-center">
-                             <div className="text-xs text-slate-500 mb-1">URL Caníbal (Conflict)</div>
-                             <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-lg min-w-[140px]">
-                                <div className="text-xs text-rose-300 font-mono truncate max-w-[120px] mx-auto">{item.conflictingUrl}</div>
-                                <div className="text-xl font-bold text-white mt-1">#{item.conflictingRank}</div>
-                             </div>
-                          </div>
-                       </div>
-
-                       {/* Action */}
-                       <div className="w-full md:w-auto text-center">
-                          <button className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg border border-slate-700 transition-colors">
-                             Ver Recomendación &rarr;
-                          </button>
-                       </div>
+                                       <div className="mt-5 flex items-center gap-3 pt-4 border-t border-slate-800/50">
+                                           <button className="text-xs bg-violet-600 hover:bg-violet-500 text-white px-3 py-1.5 rounded font-medium shadow-lg shadow-violet-500/20 transition-all flex items-center gap-2">
+                                               <Check className="h-3 w-3" /> Marcar Resuelto
+                                           </button>
+                                           <button className="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded hover:bg-slate-900 transition-colors flex items-center gap-2">
+                                               <ExternalLink className="h-3 w-3" /> Ver Documentación
+                                           </button>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       )}
                     </div>
-                  ))}
+                  );})}
                </div>
             </div>
 
-            {/* Ranking History Chart (Existing) */}
+            {/* Ranking History Chart (Updated Select Style) */}
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
                <div className="flex items-center justify-between mb-6">
                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-violet-400" />
                     Evolución de Ranking: "que es el sat"
                   </h3>
-                  <select className="bg-slate-950 border border-slate-800 text-xs text-slate-300 rounded px-2 py-1 focus:outline-none focus:border-violet-500">
-                    <option>Últimos 3 meses</option>
-                    <option>Últimos 6 meses</option>
-                  </select>
+                  <div className="relative">
+                      <select className="appearance-none bg-slate-950 border border-slate-800 text-xs text-slate-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 cursor-pointer hover:bg-slate-900 transition-colors">
+                        <option>Últimos 3 meses</option>
+                        <option>Últimos 6 meses</option>
+                        <option>Año Completo</option>
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500 pointer-events-none" />
+                  </div>
                </div>
                
                <div className="h-[300px] w-full">
@@ -863,7 +1023,7 @@ const ProjectDetail = () => {
                           <div className={cn("text-slate-500 transition-transform duration-300", isOpen && "rotate-180")}><ChevronDown className="h-5 w-5" /></div>
                        </div>
                     </div>
-                    <div className={cn("bg-slate-950 border-t border-slate-800 transition-all duration-300 overflow-hidden", isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0")}>
+                    <div className={cn("bg-slate-950 border-t border-slate-800 transition-all duration-300 overflow-hidden", isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0")}>
                        <div className="p-2 space-y-1">
                           {category.tasks.map((task, idx) => (
                              <div 

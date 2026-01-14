@@ -105,3 +105,36 @@ export interface CompetitorMetric {
   diff: number; // positive is good, negative needs work
   unit?: string;
 }
+
+// NEW TYPE FOR QUICK WINS SECTION
+export interface QuickWinItem {
+  id: string;
+  keyword: string;
+  description: string;
+  volume: number;
+  difficulty: number;
+  country: string;
+  potentialTraffic: number;
+  parentKeyword?: string;
+  initialRank: number;
+  targetRank: number;
+  secondaryKeywords: string[];
+  status: 'IN PROGRESS' | 'DONE';
+}
+
+// UPDATED TYPES FOR POLICY SECTION (Structured Text)
+export interface PolicyContentBlock {
+  subtitle?: string;
+  text?: string;
+  list?: string[];
+  formula?: string[]; // For specific formula styling
+  highlight?: string; // For critical clauses
+}
+
+export interface PolicyCategory {
+  id: string;
+  title: string;
+  icon: LucideIcon;
+  colorClass: string;
+  content: PolicyContentBlock[];
+}

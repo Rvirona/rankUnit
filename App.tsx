@@ -1,11 +1,22 @@
-import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import ProjectDetail from './components/ProjectDetail';
 import { ViewModeProvider, useViewMode } from './lib/context';
 import { cn } from './lib/utils';
 import { UserCircle2 } from 'lucide-react';
+
+// ScrollToTop Component: Handles window scroll on route transitions
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 // Top Navbar Component
 const TopBar = () => {
@@ -19,32 +30,6 @@ const TopBar = () => {
       </div>
 
       <div className="flex items-center gap-6">
-        {/* Client Mode Toggle */}
-        <div className="flex items-center gap-3 bg-slate-900 rounded-full p-1 border border-slate-800">
-          <button
-            onClick={toggleViewMode}
-            className={cn(
-              "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-              !isClientMode 
-                ? "bg-slate-800 text-white shadow-sm" 
-                : "text-slate-500 hover:text-slate-300"
-            )}
-          >
-            SEO View
-          </button>
-          <button
-            onClick={toggleViewMode}
-            className={cn(
-              "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-              isClientMode 
-                ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20" 
-                : "text-slate-500 hover:text-slate-300"
-            )}
-          >
-            Client Mode
-          </button>
-        </div>
-
         {/* User Profile */}
         <div className="flex items-center gap-2 text-slate-300 hover:text-white cursor-pointer transition-colors">
           <UserCircle2 className="h-6 w-6" />
@@ -74,6 +59,7 @@ const App: React.FC = () => {
   return (
     <ViewModeProvider>
       <Router>
+        <ScrollToTop />
         <Layout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
